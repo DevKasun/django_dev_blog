@@ -41,7 +41,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
-    'django_browser_reload',
+    # 'django_browser_reload',
     'widget_tweaks',
 ]
 
@@ -57,17 +57,17 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django_browser_reload.middleware.BrowserReloaderMiddleware',
+    # 'django_browser_reload.middleware.BrowserReloaderMiddleware',
 ]
 
-if DEBUG:
-    INSTALLED_APPS += ['debug_toolbar']
-    MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
+# if DEBUG:
+#     INSTALLED_APPS += ['debug_toolbar']
+#     MIDDLEWARE += ['debug_toolbar.middleware.DebugToolbarMiddleware']
     
-    import socket
-    hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
+#     import socket
+#     hostname, _, ips = socket.gethostbyname_ex(socket.gethostname())
     
-    INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]
+#     INTERNAL_IPS = [ip[:-1] + "1" for ip in ips] + ["127.0.0.1"]
 
 ROOT_URLCONF = 'config.urls'
 
