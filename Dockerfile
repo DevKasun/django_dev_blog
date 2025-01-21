@@ -4,10 +4,9 @@ FROM python:3.11-slim
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    POETRY_VERSION=1.7.1 \
-    POETRY_HOME="/opt/poetry" \
-    POETRY_VENV="/opt/poetry-venv" \
-    POETRY_CACHE_DIR="/opt/.cache"
+    PIP_NO_CACHE_DIR=off \
+    PIP_DISABLE_PIP_VERSION_CHECK=on \
+    PIP_DEFAULT_TIMEOUT=100
 
 # Install system dependencies
 RUN apt-get update && apt-get install -y \
@@ -17,12 +16,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 # Install poetry
-RUN python3 -m venv $POETRY_VENV \
-    && $POETRY_VENV/bin/pip install -U pip setuptools \
-    && $POETRY_VENV/bin/pip install poetry==${POETRY_VERSION}
-
-# Add poetry to PATH
-ENV PATH="${PATH}:${POETRY_VENV}/bin"
+RUN curl -sSL https://install.python-poetry.org | python3 -
 
 # Set working directory
 WORKDIR /app
@@ -30,12 +24,15 @@ WORKDIR /app
 # Copy poetry files
 COPY pyproject.toml poetry.lock ./
 
-# Install dependencies
+# Configure poetry
 RUN poetry config virtualenvs.create false \
-    && poetry install --no-interaction --no-ansi
+    && poetry install --no-root --no-interaction
 
 # Copy project files
 COPY . .
+
+# Install project
+RUN poetry install --no-interaction
 
 # Expose port
 EXPOSE 8000
